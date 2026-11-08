@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
 
@@ -37,10 +35,12 @@ def predict():
     except ValueError as exc:
         flash(str(exc), "error")
         return redirect(url_for("main.index"))
-    add_prediction(current_app.config["DATABASE_URL"], filename, label, confidence,
-                   inference.model_name, inference.model_version)
-    return render_template("result.html", label=label, confidence=confidence,
-                           filename=filename, model_name=inference.model_name)
+    add_prediction(
+        current_app.config["DATABASE_URL"], filename, label, confidence, inference.model_name, inference.model_version
+    )
+    return render_template(
+        "result.html", label=label, confidence=confidence, filename=filename, model_name=inference.model_name
+    )
 
 
 @bp.get("/history")
@@ -53,4 +53,3 @@ def health():
     inference = current_app.extensions.get("inference")
     status = "ok" if inference else "degraded"
     return {"status": status, "model_loaded": inference is not None}, (200 if inference else 503)
-

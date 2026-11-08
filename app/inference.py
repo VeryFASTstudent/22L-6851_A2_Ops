@@ -24,11 +24,16 @@ class ModelInference:
             raise ModelLoadError(f"Champion model not found at {model_path}. Train a model and set MODEL_PATH.")
         try:
             import tensorflow as tf
+
             model = tf.keras.models.load_model(model_path)
         except Exception as exc:
             raise ModelLoadError(f"Could not load champion model: {exc}") from exc
-        return cls(model, float(os.getenv("MODEL_THRESHOLD", "0.5")),
-                   os.getenv("MODEL_NAME", "visionguard"), os.getenv("MODEL_VERSION", "local"))
+        return cls(
+            model,
+            float(os.getenv("MODEL_THRESHOLD", "0.5")),
+            os.getenv("MODEL_NAME", "visionguard"),
+            os.getenv("MODEL_VERSION", "local"),
+        )
 
     def predict(self, image_stream):
         try:

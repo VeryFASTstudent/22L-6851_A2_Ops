@@ -19,6 +19,7 @@ def connection(url):
     if url.startswith(("postgresql://", "postgres://")):
         import psycopg
         from psycopg.rows import dict_row
+
         return psycopg.connect(url, row_factory=dict_row)
     raise RuntimeError("DATABASE_URL must use sqlite:/// or postgresql://.")
 
@@ -51,6 +52,4 @@ def add_prediction(url, filename, label, confidence, model_name, model_version):
 
 def list_predictions(url, limit=100):
     with connection(url) as conn:
-        return conn.execute(
-            "SELECT * FROM predictions ORDER BY id DESC LIMIT ?", (limit,)
-        ).fetchall()
+        return conn.execute("SELECT * FROM predictions ORDER BY id DESC LIMIT ?", (limit,)).fetchall()

@@ -22,10 +22,12 @@ services:
       MODEL_NAME: ${MODEL_NAME:-visionguard}
       MODEL_VERSION: ${MODEL_VERSION:-local}
       MODEL_THRESHOLD: ${MODEL_THRESHOLD:-0.5}
+    volumes:
+      - ./models:/app/models:ro
+      - ./data:/app/data
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
 volumes:
   postgres_data:
-

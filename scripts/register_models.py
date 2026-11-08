@@ -1,4 +1,5 @@
 """Register both trained Keras models in MLflow and assign the best one champion."""
+
 import os
 from pathlib import Path
 
@@ -48,10 +49,7 @@ def main():
     if len(versions) < 2:
         raise RuntimeError(f"Expected at least two versions of {MODEL_NAME}; found {len(versions)}.")
 
-    baseline_versions = [
-        version for version in versions
-        if version.tags.get("model_type") == "baseline"
-    ]
+    baseline_versions = [version for version in versions if version.tags.get("model_type") == "baseline"]
     if baseline_versions:
         champion = max(baseline_versions, key=lambda version: int(version.version))
     else:

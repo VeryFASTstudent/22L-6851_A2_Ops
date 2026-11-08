@@ -1,7 +1,7 @@
 """Load a registered champion or local fallback and classify one image."""
+
 import argparse
 import os
-from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -24,9 +24,13 @@ def main():
     with Image.open(args.image) as image:
         array = np.asarray(image.convert("RGB").resize((224, 224)), dtype="float32") / 255
     probability = float(model.predict(array[None, ...], verbose=0).reshape(-1)[0])
-    print({"label": "AI-generated" if probability >= .5 else "Real",
-           "confidence": probability if probability >= .5 else 1 - probability,
-           "model": uri or args.local_model})
+    print(
+        {
+            "label": "AI-generated" if probability >= 0.5 else "Real",
+            "confidence": probability if probability >= 0.5 else 1 - probability,
+            "model": uri or args.local_model,
+        }
+    )
 
 
 if __name__ == "__main__":

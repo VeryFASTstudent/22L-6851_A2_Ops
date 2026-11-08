@@ -9,8 +9,7 @@ from .routes import bp
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True,
-                template_folder="../templates", static_folder="../static")
+    app = Flask(__name__, instance_relative_config=True, template_folder="../templates", static_folder="../static")
     app.config.from_mapping(
         SECRET_KEY=os.getenv("SECRET_KEY", "change-me-in-production"),
         MAX_CONTENT_LENGTH=int(os.getenv("MAX_CONTENT_LENGTH", str(10 * 1024 * 1024))),
