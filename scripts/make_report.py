@@ -32,7 +32,7 @@ def build():
         Paragraph("VisionGuard", styles["Cover"]),
         Spacer(1, 18),
         Paragraph("AI-Generated Image Classification and Deployment", styles["Heading2"]),
-        Paragraph("Student: HASSAN<br/>Roll number: 22L-6851<br/>GitHub: https://github.com/VeryFASTstudent/22L-6851_A2_Ops<br/>DagsHub: https://dagshub.com/VeryFASTstudent/22L-6851_A2_Ops<br/>Live URL: To be added after cloud deployment", styles["BodyText"]),
+        Paragraph("Student: Hassan Musa<br/>Roll number: 22L-6851<br/>GitHub: https://github.com/VeryFASTstudent/22L-6851_A2_Ops<br/>DagsHub: https://dagshub.com/VeryFASTstudent/22L-6851_A2_Ops<br/>Live URL: To be added after cloud deployment", styles["BodyText"]),
         Spacer(1, 18),
         Paragraph("This report documents the reproducible local implementation, dataset audit, model training, evaluation artifacts, experiment tooling, Flask service, database trail, and container configuration. Cloud credentials, public deployment, and account screenshots remain operator-owned evidence.", styles["BodyText"]),
         PageBreak(),
@@ -66,10 +66,6 @@ def build():
         Paragraph("Best toy tuner settings: " + (ROOT / "artifacts/tuner/best_hyperparameters.txt").read_text(encoding="utf-8"), styles["BodyText"]),
         Paragraph("5. Serving and operations", styles["Heading1"]),
         Paragraph("The Flask service loads the champion model once at startup, validates extensions and decodability, does not persist uploaded images, records every successful prediction, and exposes /health and /history. Docker Compose provides a web service and an internal PostgreSQL service with a named volume and health-gated startup. GitHub Actions runs tests, linting, and a Docker build.", styles["BodyText"]),
-        Paragraph("6. Submission evidence still required", styles["Heading1"]),
-        Paragraph("The following must be captured by the student because they depend on personal accounts or external infrastructure: GitHub Actions run, DagsHub project and registry screenshots, DVC remote screenshot, cloud VM setup, public HTTPS URL, Postman request, and the final live health response. The live URL should replace the placeholder on the cover page after deployment.", styles["BodyText"]),
-        Spacer(1, 18),
-        Paragraph("Generated from the local VisionGuard workspace. Final commit: " + "see git rev-parse HEAD", styles["Small"]),
     ]
     document.build(story)
     print(output)
