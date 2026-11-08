@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block content %}<section class="card"><h1>{{ label }}</h1><p class="confidence">{{ "%.1f"|format(confidence * 100) }}% confidence</p><p><strong>File:</strong> {{ filename }}</p><p class="muted">Model estimates can be wrong, especially for edited, compressed, or unusual images.</p><a class="button" href="{{ url_for('main.index') }}">Analyze another</a></section>{% endblock %}
+

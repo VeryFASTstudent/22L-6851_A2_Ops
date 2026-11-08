@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}<section class="card"><h1>Is this image AI-generated?</h1><p>Upload an image for a model-based estimate.</p>
+<form action="{{ url_for('main.predict') }}" method="post" enctype="multipart/form-data"><label for="image">Image file</label><input id="image" name="image" type="file" accept="image/*" required><button>Analyze image</button></form>
+<p class="muted">This is an experimental classifier; confidence is not proof of provenance.</p></section>{% endblock %}
+
