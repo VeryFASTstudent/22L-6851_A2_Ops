@@ -1,0 +1,4 @@
+[core]
+    remote = dagshub
+['remote "dagshub"']
+    url = https://dagshub.com/VeryFASTstudent/22L-6851_A2_Ops.dvc

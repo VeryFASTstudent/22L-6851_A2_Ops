@@ -5,8 +5,8 @@ __pycache__/
 .env
 data/*
 !data/.gitkeep
+!data/*.dvc
 models/*
 !models/.gitkeep
 mlruns/
 *.pyc
-
