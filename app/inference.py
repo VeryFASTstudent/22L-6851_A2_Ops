@@ -18,8 +18,8 @@ class ModelInference:
         self.image_size = image_size
 
     @classmethod
-    def from_environment(cls):
-        model_path = Path(os.getenv("MODEL_PATH", "models/champion.keras"))
+    def from_environment(cls, configured_path=None):
+        model_path = Path(configured_path or os.getenv("MODEL_PATH", "models/champion.keras"))
         if not model_path.exists():
             raise ModelLoadError(f"Champion model not found at {model_path}. Train a model and set MODEL_PATH.")
         try:
@@ -40,4 +40,3 @@ class ModelInference:
         label = "AI-generated" if probability >= self.threshold else "Real"
         confidence = probability if label == "AI-generated" else 1.0 - probability
         return label, confidence
-

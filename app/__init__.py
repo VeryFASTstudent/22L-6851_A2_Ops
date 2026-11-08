@@ -15,13 +15,14 @@ def create_app(test_config=None):
         SECRET_KEY=os.getenv("SECRET_KEY", "change-me-in-production"),
         MAX_CONTENT_LENGTH=int(os.getenv("MAX_CONTENT_LENGTH", str(10 * 1024 * 1024))),
         DATABASE_URL=os.getenv("DATABASE_URL", "sqlite:///data/visionguard.db"),
+        MODEL_PATH=os.getenv("MODEL_PATH", "models/champion.keras"),
     )
     if test_config:
         app.config.update(test_config)
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     init_db(app.config["DATABASE_URL"])
     try:
-        app.extensions["inference"] = ModelInference.from_environment()
+        app.extensions["inference"] = ModelInference.from_environment(app.config["MODEL_PATH"])
     except ModelLoadError as exc:
         app.extensions["inference_error"] = str(exc)
         app.extensions["inference"] = None
