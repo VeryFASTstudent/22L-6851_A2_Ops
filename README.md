@@ -18,6 +18,18 @@ The UI is at `http://localhost:8000`. Without `models/champion.keras`, `/health`
 
 `python scripts/audit_dataset.py path\to\dataset --output data\audit.csv` records dimensions, mode, format, size, SHA-256, corrupt files, and duplicate hashes. Run training through `python scripts/track_run.py python scripts/train.py ...`; set `MLFLOW_TRACKING_URI` to the DagsHub MLflow endpoint and provide credentials through environment variables, never source code.
 
+Generate assignment artifacts locally:
+
+```powershell
+python scripts\eda.py data\dataset --output artifacts\eda
+python scripts\evaluate.py --data data\dataset --model models\champion.keras --output artifacts\evaluation
+python scripts\tune.py --output artifacts\tuner --trials 8
+python scripts\mlflow_compare.py --data data\dataset --models models\baseline.keras models\transfer.keras
+python scripts\registry_predict.py data\dataset\AiArtData\example.jpg --local-model models\champion.keras
+```
+
+The evaluation script uses a seeded, stratified holdout and chooses the classification threshold on that holdout for this assignment baseline. For a production report, keep a separate validation set for threshold selection and reserve an untouched test set for the final metrics.
+
 ## Docker
 
 Create `.env` with `POSTGRES_PASSWORD`, then run `docker compose up --build`. PostgreSQL is internal-only; the web service is published on port 8000. The model is baked into the image from `models/champion.keras` for deterministic deployment. Do not commit credentials or model artifacts to Git.

@@ -3,6 +3,7 @@ import argparse, os, random
 from pathlib import Path
 import numpy as np
 import tensorflow as tf
+from sklearn.model_selection import train_test_split
 
 SEED = 42
 def seed_everything():
@@ -28,19 +29,28 @@ def make_model(kind="baseline", image_size=224, dropout=.3, unfrozen=0):
     x = tf.keras.layers.Dropout(dropout)(x)
     return tf.keras.Model(inputs, tf.keras.layers.Dense(1, activation="sigmoid")(x))
 
+def make_dataset(paths, labels, training):
+    dataset = tf.data.Dataset.from_tensor_slices((paths, labels))
+    if training:
+        dataset = dataset.shuffle(len(paths), seed=SEED, reshuffle_each_iteration=True)
+    def load(path, label):
+        image = tf.io.decode_image(tf.io.read_file(path), channels=3, expand_animations=False)
+        image = tf.image.resize(image, (224, 224))
+        return tf.cast(image, tf.float32), tf.cast(label, tf.float32)
+    return dataset.map(load, num_parallel_calls=tf.data.AUTOTUNE).batch(32).prefetch(tf.data.AUTOTUNE)
+
 def main():
     parser = argparse.ArgumentParser(); parser.add_argument("--data", required=True); parser.add_argument("--output", default="models/champion.keras")
     parser.add_argument("--kind", choices=("baseline","transfer"), default="transfer"); parser.add_argument("--epochs", type=int, default=20)
     args = parser.parse_args(); seed_everything()
     class_names = ["RealArt", "AiArtData"]
-    train = tf.keras.utils.image_dataset_from_directory(
-        args.data, validation_split=.2, subset="training", seed=SEED,
-        class_names=class_names, image_size=(224, 224), batch_size=32
-    )
-    val = tf.keras.utils.image_dataset_from_directory(
-        args.data, validation_split=.2, subset="validation", seed=SEED,
-        class_names=class_names, image_size=(224, 224), batch_size=32
-    )
+    paths = [str(path) for name in class_names for path in sorted(Path(args.data, name).glob("*"))
+             if path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}]
+    labels = [0 if Path(path).parent.name == "RealArt" else 1 for path in paths]
+    train_paths, val_paths, train_labels, val_labels = train_test_split(
+        paths, labels, test_size=.2, random_state=SEED, stratify=labels)
+    train = make_dataset(train_paths, train_labels, True)
+    val = make_dataset(val_paths, val_labels, False)
     model = make_model(args.kind); model.compile(optimizer=tf.keras.optimizers.Adam(1e-4), loss="binary_crossentropy", metrics=["accuracy", tf.keras.metrics.AUC(name="auc")])
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     model.fit(train.prefetch(tf.data.AUTOTUNE), validation_data=val.prefetch(tf.data.AUTOTUNE), epochs=args.epochs,

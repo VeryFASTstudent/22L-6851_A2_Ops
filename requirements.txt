@@ -8,3 +8,7 @@ python-dotenv==1.0.1
 psycopg[binary]==3.2.3
 pytest==8.3.4
 ruff==0.8.6
+keras-tuner==1.4.7
+matplotlib==3.10.0
+scikit-learn==1.6.1
+reportlab==4.2.5
